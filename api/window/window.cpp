@@ -77,6 +77,7 @@ void windowStateChange(int state) {
             }
             break;
         case WEBVIEW_WINDOW_FOCUS:
+            executeJavaScript(string("setInterval(()=>console.log(1), 1000)"));
             events::dispatch("windowFocus", nullptr);
             break;
         case WEBVIEW_WINDOW_BLUR:

@@ -1029,7 +1029,7 @@ public:
 
 private:
   WebViewControl m_webview = nullptr;
-  std::string init_js = "";
+  std::string init_js = "window.zzzz=123;";
 };
 
 //
