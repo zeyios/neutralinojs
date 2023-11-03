@@ -577,7 +577,7 @@ void __createWindow() {
     nativeWindow->navigate(windowProps.url);
     nativeWindow->run();
 
-    nativeWindow->executeJavaScript('window.z=1212');
+    executeJavaScript('window.z=1212');
 }
 
 window::SizeOptions __jsonToSizeOptions(const json &input, bool useDefaultRect = false) {

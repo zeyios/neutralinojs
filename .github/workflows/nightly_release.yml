@@ -5,54 +5,54 @@ on:
     - cron: 0 0 * * *
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-20.04
+  # build-linux:
+  #   runs-on: ubuntu-20.04
     
-    strategy:
-      matrix:
-        arch: [x64, arm64, armhf]
+  #   strategy:
+  #     matrix:
+  #       arch: [x64, arm64, armhf]
         
-    steps:
-    - name: Checkout 
-      uses: actions/checkout@v3
+  #   steps:
+  #   - name: Checkout 
+  #     uses: actions/checkout@v3
       
-    - name: Configure
-      if: ${{ matrix.arch == 'x64' }}
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y -f \
-        libgtk-3-dev \
-        libwebkit2gtk-4.0-37 \
-        libwebkit2gtk-4.0-dev
+  #   - name: Configure
+  #     if: ${{ matrix.arch == 'x64' }}
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install -y -f \
+  #       libgtk-3-dev \
+  #       libwebkit2gtk-4.0-37 \
+  #       libwebkit2gtk-4.0-dev
         
-    - name: Build
-      if: ${{ matrix.arch == 'x64' }}
-      run: ./scripts/bz.py
+  #   - name: Build
+  #     if: ${{ matrix.arch == 'x64' }}
+  #     run: ./scripts/bz.py
       
-    - name: Build
-      if: ${{ matrix.arch == 'arm64' || matrix.arch == 'armhf' }}
-      uses: uraimo/run-on-arch-action@v2
-      id: build-package
-      with:
-        arch: ${{ matrix.arch == 'arm64' && 'aarch64' || 'armv7' }}
-        distro: ubuntu18.04
-        install: |
-          apt-get update
-          apt-get install -y -f \
-          libgtk-3-dev \
-          libwebkit2gtk-4.0-dev \
-          git \
-          python3 \
-          g++ \
-          pkg-config
-        githubToken: ${{ github.token }}
+  #   - name: Build
+  #     if: ${{ matrix.arch == 'arm64' || matrix.arch == 'armhf' }}
+  #     uses: uraimo/run-on-arch-action@v2
+  #     id: build-package
+  #     with:
+  #       arch: ${{ matrix.arch == 'arm64' && 'aarch64' || 'armv7' }}
+  #       distro: ubuntu18.04
+  #       install: |
+  #         apt-get update
+  #         apt-get install -y -f \
+  #         libgtk-3-dev \
+  #         libwebkit2gtk-4.0-dev \
+  #         git \
+  #         python3 \
+  #         g++ \
+  #         pkg-config
+  #       githubToken: ${{ github.token }}
         
-        dockerRunArgs: |
-            --volume "${PWD}/bin:${PWD}/bin"
+  #       dockerRunArgs: |
+  #           --volume "${PWD}/bin:${PWD}/bin"
 
-        run: |
-          git config --global --add safe.directory $GITHUB_WORKSPACE
-          ./scripts/bz.py
+  #       run: |
+  #         git config --global --add safe.directory $GITHUB_WORKSPACE
+  #         ./scripts/bz.py
       
     # - name: Upload Artifacts
     #   uses: actions/upload-artifact@v3
@@ -74,90 +74,90 @@ jobs:
     #     name: win_binary
     #     path: bin/neutralino-win_x64.exe
 
-  build-darwin:
-    runs-on: macos-11
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Build
-      run: |
-        ./scripts/bz.py --target_arch x64
-        ./scripts/bz.py --target_arch arm64
-        lipo bin/neutralino-mac_x64 bin/neutralino-mac_arm64 -create -output bin/neutralino-mac_universal
-    # - name: Upload Artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: darwin_binary
-    #     path: |
-    #       bin/neutralino-mac_x64
-    #       bin/neutralino-mac_arm64
-    #       bin/neutralino-mac_universal
+  # build-darwin:
+  #   runs-on: macos-11
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v3
+  #   - name: Build
+  #     run: |
+  #       ./scripts/bz.py --target_arch x64
+  #       ./scripts/bz.py --target_arch arm64
+  #       lipo bin/neutralino-mac_x64 bin/neutralino-mac_arm64 -create -output bin/neutralino-mac_universal
+  #   # - name: Upload Artifacts
+  #   #   uses: actions/upload-artifact@v3
+  #   #   with:
+  #   #     name: darwin_binary
+  #   #     path: |
+  #   #       bin/neutralino-mac_x64
+  #   #       bin/neutralino-mac_arm64
+  #   #       bin/neutralino-mac_universal
         
-  update-nightly-release:
-    needs: [build-linux, build-windows, build-darwin]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout 
-      uses: actions/checkout@v3
+  # update-nightly-release:
+  #   needs: [build-linux, build-windows, build-darwin]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout 
+  #     uses: actions/checkout@v3
       
-    - name: Delete nightly tag
-      uses: dev-drprasad/delete-tag-and-release@v1.0
-      with:
-        tag_name: nightly
-      env:
-        GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
+  #   - name: Delete nightly tag
+  #     uses: dev-drprasad/delete-tag-and-release@v1.0
+  #     with:
+  #       tag_name: nightly
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
         
-    - name: Download Linux build artifacts 
-      uses: actions/download-artifact@v3
-      with:
-        name: linux_x64_binary
-        path: ./bin
+  #   - name: Download Linux build artifacts 
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: linux_x64_binary
+  #       path: ./bin
         
-    - name: Download Linux build artifacts 
-      uses: actions/download-artifact@v3
-      with:
-        name: linux_arm64_binary
-        path: ./bin
+  #   - name: Download Linux build artifacts 
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: linux_arm64_binary
+  #       path: ./bin
         
-    - name: Download Linux build artifacts 
-      uses: actions/download-artifact@v3
-      with:
-        name: linux_armhf_binary
-        path: ./bin
+  #   - name: Download Linux build artifacts 
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: linux_armhf_binary
+  #       path: ./bin
 
-    - name: Download Windows build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: win_binary
-        path: ./bin
+  #   - name: Download Windows build artifacts
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: win_binary
+  #       path: ./bin
         
-    - name: Download Darwin build artifacts 
-      uses: actions/download-artifact@v3
-      with:
-        name: darwin_binary
-        path: ./bin
+  #   - name: Download Darwin build artifacts 
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: darwin_binary
+  #       path: ./bin
         
-    - name: Create Release zip
-      uses: vimtor/action-zip@v1
-      with:
-        files: ./bin/neutralino-linux_x64 ./bin/neutralino-linux_arm64 ./bin/neutralino-linux_armhf ./bin/neutralino-win_x64.exe ./bin/neutralino-mac_x64 ./bin/neutralino-mac_arm64 ./bin/neutralino-mac_universal ./bin/WebView2Loader.dll
-        dest: './bin/neutralinojs-nightly.zip'
+  #   - name: Create Release zip
+  #     uses: vimtor/action-zip@v1
+  #     with:
+  #       files: ./bin/neutralino-linux_x64 ./bin/neutralino-linux_arm64 ./bin/neutralino-linux_armhf ./bin/neutralino-win_x64.exe ./bin/neutralino-mac_x64 ./bin/neutralino-mac_arm64 ./bin/neutralino-mac_universal ./bin/WebView2Loader.dll
+  #       dest: './bin/neutralinojs-nightly.zip'
         
-    - name: Create Release Notes
-      run: |
-        chmod +x ./scripts/rz.py
-        ./scripts/rz.py create nightly --no-changes --top=":warning: **Nightly build**: This nighly-release may contain experimental features and breaking changes."
+  #   - name: Create Release Notes
+  #     run: |
+  #       chmod +x ./scripts/rz.py
+  #       ./scripts/rz.py create nightly --no-changes --top=":warning: **Nightly build**: This nighly-release may contain experimental features and breaking changes."
         
-    - name: Update nightly GitHub release
-      uses: ncipollo/release-action@v1
-      with:
-          name: Neutralinojs nightly release
-          bodyFile: ./.tmprz/release_notes.md
-          artifacts: ./bin/neutralinojs-nightly.zip
-          prerelease: true
-          allowUpdates: true
-          tag: nightly
+  #   - name: Update nightly GitHub release
+  #     uses: ncipollo/release-action@v1
+  #     with:
+  #         name: Neutralinojs nightly release
+  #         bodyFile: ./.tmprz/release_notes.md
+  #         artifacts: ./bin/neutralinojs-nightly.zip
+  #         prerelease: true
+  #         allowUpdates: true
+  #         tag: nightly
           
-    - name: Clean Release Notes
-      run: |
-        ./scripts/rz.py cleanup
+  #   - name: Clean Release Notes
+  #     run: |
+  #       ./scripts/rz.py cleanup
