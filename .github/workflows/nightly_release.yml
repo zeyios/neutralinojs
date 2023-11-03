@@ -68,11 +68,11 @@ jobs:
     - name: Build
       run: python ./scripts/bz.py
       shell: cmd
-    # - name: Upload Artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: win_binary
-    #     path: bin/neutralino-win_x64.exe
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: win_binary
+        path: bin/neutralino-win_x64.exe
 
   # build-darwin:
   #   runs-on: macos-11
