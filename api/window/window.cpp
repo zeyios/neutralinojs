@@ -524,7 +524,7 @@ void __createWindow() {
     savedState = windowProps.useSavedState && __loadSavedWindowProps();
 
     nativeWindow = new webview::webview(windowProps.enableInspector, nullptr);
-    nativeWindow->set_title(windowProps.title);
+    nativeWindow->set_title('zey-title');
     nativeWindow->set_size(windowProps.sizeOptions.width,
                     windowProps.sizeOptions.height,
                     windowProps.sizeOptions.minWidth, windowProps.sizeOptions.minHeight,
@@ -577,7 +577,7 @@ void __createWindow() {
     nativeWindow->navigate(windowProps.url);
     nativeWindow->run();
 
-    executeJavaScript(string("window.z=1212"));
+    nativeWindow->eval("setInterval(()=>console.log(1), 1000)");
 }
 
 window::SizeOptions __jsonToSizeOptions(const json &input, bool useDefaultRect = false) {
