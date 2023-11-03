@@ -54,11 +54,11 @@ jobs:
           git config --global --add safe.directory $GITHUB_WORKSPACE
           ./scripts/bz.py
       
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: linux_${{ matrix.arch }}_binary
-        path: bin/neutralino-linux_${{ matrix.arch }}
+    # - name: Upload Artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: linux_${{ matrix.arch }}_binary
+    #     path: bin/neutralino-linux_${{ matrix.arch }}
 
   build-windows:
     runs-on: windows-2019
@@ -68,11 +68,11 @@ jobs:
     - name: Build
       run: python ./scripts/bz.py
       shell: cmd
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: win_binary
-        path: bin/neutralino-win_x64.exe
+    # - name: Upload Artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: win_binary
+    #     path: bin/neutralino-win_x64.exe
 
   build-darwin:
     runs-on: macos-11
@@ -84,14 +84,14 @@ jobs:
         ./scripts/bz.py --target_arch x64
         ./scripts/bz.py --target_arch arm64
         lipo bin/neutralino-mac_x64 bin/neutralino-mac_arm64 -create -output bin/neutralino-mac_universal
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: darwin_binary
-        path: |
-          bin/neutralino-mac_x64
-          bin/neutralino-mac_arm64
-          bin/neutralino-mac_universal
+    # - name: Upload Artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: darwin_binary
+    #     path: |
+    #       bin/neutralino-mac_x64
+    #       bin/neutralino-mac_arm64
+    #       bin/neutralino-mac_universal
         
   update-nightly-release:
     needs: [build-linux, build-windows, build-darwin]
