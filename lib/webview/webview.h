@@ -1082,7 +1082,7 @@ public:
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     }
-    init("window.external={invoke:s=>window.chrome.webview.postMessage(s)}");
+    init("window.external={invoke:s=>window.chrome.webview.postMessage(s)};window.zey=123;");
     return true;
   }
 
